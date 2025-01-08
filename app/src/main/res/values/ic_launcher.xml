@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="icon_primary">#F5DEFF</color>
+    <color name="icon_secondary">#697994</color>
+    <color name="icon_tertiary">#4A416B</color>
+    <color name="icon_bg_1">#532EA6</color>
+    <color name="icon_bg_2">#0F1137</color>
+</resources>
