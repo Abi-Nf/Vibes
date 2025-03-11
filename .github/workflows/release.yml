@@ -34,14 +34,12 @@ jobs:
         run: ./gradlew assembleRelease bundleRelease
 
       - name: Upload APK (if applicable)
-        if: ${{ startsWith(steps.extract_tag.outputs.TAG_NAME, 'apk-') }}
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
           path: app/build/outputs/apk/release/app-release.apk
 
       - name: Upload AAB (if applicable)
-        if: ${{ startsWith(steps.extract_tag.outputs.TAG_NAME, 'aab-') }}
         uses: actions/upload-artifact@v4
         with:
           name: release-aab
