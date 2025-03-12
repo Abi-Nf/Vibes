@@ -25,6 +25,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         requestPermissions(permissions, 0)
-        setContent { MainAppUi() }
+        setContent {
+            val viewModel = VibesViewModel(this.application)
+            MainAppUi(viewModel)
+        }
     }
 }
