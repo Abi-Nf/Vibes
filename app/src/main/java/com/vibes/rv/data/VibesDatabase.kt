@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.vibes.rv.data.converter.InstantConverter
 import com.vibes.rv.data.converter.UriConverter
 import com.vibes.rv.data.model.Like
 import com.vibes.rv.data.model.PlayHistory
@@ -15,7 +16,7 @@ import com.vibes.rv.data.model.PlaylistItem
     entities = [Like::class, PlayHistory::class, Playlist::class, PlaylistItem::class],
     version = 1
 )
-@TypeConverters(UriConverter::class)
+@TypeConverters(UriConverter::class, InstantConverter::class)
 abstract class VibesDatabase : RoomDatabase() {
     companion object {
         fun init(context: Context): VibesDatabase {
