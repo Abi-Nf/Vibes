@@ -16,6 +16,7 @@ import com.vibes.rv.service.PlaybackService
 @Stable
 class VibesViewModel(
     application: Application,
+    val database: VibesDatabase,
 ): AndroidViewModel(application) {
     var mediaController: MediaController? by mutableStateOf(null)
         private set

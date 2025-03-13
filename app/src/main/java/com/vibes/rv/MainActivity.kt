@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.vibes.rv.data.VibesDatabase
 import com.vibes.rv.ui.MainAppUi
 
 class MainActivity : ComponentActivity() {
@@ -25,8 +26,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         requestPermissions(permissions, 0)
+        val database = VibesDatabase.init(this)
         setContent {
-            val viewModel = VibesViewModel(this.application)
+            val viewModel = VibesViewModel(this.application, database)
             MainAppUi(viewModel)
         }
     }
