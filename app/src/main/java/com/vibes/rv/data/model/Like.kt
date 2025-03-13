@@ -1,9 +1,11 @@
 package com.vibes.rv.data.model
 
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.Instant
 import java.time.Instant.now
 
+@Entity
 data class Like(
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,

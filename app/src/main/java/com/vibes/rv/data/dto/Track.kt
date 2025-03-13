@@ -6,7 +6,7 @@ import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
-import com.vibes.rv.util.now
+import java.util.Date
 
 data class Track(
     val id: Long,
@@ -17,7 +17,7 @@ data class Track(
     val duration: Long, // in millisecond
     val source: Uri,
     val size: Long,
-    val addedAt: Long = now()
+    val addedAt: Date
 ) {
     @OptIn(UnstableApi::class)
     fun toMediaItem(): MediaItem {
