@@ -3,7 +3,8 @@ package com.vibes.rv.data.model
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.vibes.rv.util.now
+import java.time.Instant
+import java.time.Instant.now
 
 @Entity(foreignKeys = [
     ForeignKey(
@@ -19,5 +20,5 @@ data class PlaylistItem(
     val id: Long? = null,
     val playlistId: Long,
     val trackId: Long,
-    val addedAt: Long = now()
+    val addedAt: Instant = now()
 )

@@ -2,7 +2,8 @@ package com.vibes.rv.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.vibes.rv.util.now
+import java.time.Instant
+import java.time.Instant.now
 
 @Entity
 data class PlayHistory(
@@ -11,7 +12,7 @@ data class PlayHistory(
     val trackId: String, // id from content resolver
     val startPlaySecond: Long,
     val endPlaySecond: Long,
-    val addedAt: Long = now()
+    val addedAt: Instant = now()
 ) {
     fun getDuration() = endPlaySecond - startPlaySecond
 }
