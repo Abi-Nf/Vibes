@@ -39,7 +39,7 @@ import com.vibes.rv.ui.screen.wrapped.Wrapped
 
 @Composable
 fun MainAppUi(viewModel: VibesViewModel) {
-    ProvideAppContext {
+    ProvideAppContext(viewModel) {
         Box(
             Modifier
                 .fillMaxSize()
