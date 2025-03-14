@@ -53,6 +53,12 @@ sealed class Destination() {
     data object PlaylistSurprise : Destination()
 
     @Serializable
+    data class AlbumDetails(val id: Long) : Destination()
+
+    @Serializable
+    data class ArtistDetails(val id: Long) : Destination()
+
+    @Serializable
     data object Settings : Destination()
 
     @Serializable
