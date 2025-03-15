@@ -11,6 +11,7 @@ import com.vibes.rv.data.model.Like
 import com.vibes.rv.data.model.PlayHistory
 import com.vibes.rv.data.model.Playlist
 import com.vibes.rv.data.model.PlaylistItem
+import com.vibes.rv.data.repository.LikeDao
 
 @Database(
     entities = [Like::class, PlayHistory::class, Playlist::class, PlaylistItem::class],
@@ -27,4 +28,6 @@ abstract class VibesDatabase : RoomDatabase() {
             ).build()
         }
     }
+
+    abstract val likeDao: LikeDao
 }
