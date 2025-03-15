@@ -3,11 +3,14 @@ package com.vibes.rv
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.vibes.rv.data.VibesDatabase
+import com.vibes.rv.data.repository.TrackRepository
 import com.vibes.rv.ui.MainAppUi
 
 class MainActivity : ComponentActivity() {
@@ -30,6 +33,9 @@ class MainActivity : ComponentActivity() {
         val database = VibesDatabase.init(this)
         setContent {
             val viewModel = viewModel { VibesViewModel(application, database) }
+            LaunchedEffect(null) {
+                Log.i("Track discovery", "Found: ${TrackRepository(this@MainActivity).getTracks()}")
+            }
             MainAppUi(viewModel)
         }
     }
