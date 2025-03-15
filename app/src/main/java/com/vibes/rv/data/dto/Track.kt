@@ -1,7 +1,9 @@
 package com.vibes.rv.data.dto
 
+import android.content.ContentUris
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -15,9 +17,12 @@ data class Track(
     val feats: List<Artist>?,
     val trackNumber: Int,
     val duration: Long, // in millisecond
-    val source: Uri,
     val size: Long,
-    val addedAt: Date
+    val addedAt: Date,
+    val source: Uri = ContentUris.withAppendedId(
+        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+        id
+    )
 ) {
     @OptIn(UnstableApi::class)
     fun toMediaItem(): MediaItem {
