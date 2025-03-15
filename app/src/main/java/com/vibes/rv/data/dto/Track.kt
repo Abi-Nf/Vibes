@@ -14,11 +14,12 @@ data class Track(
     val id: Long,
     val title: String,
     val album: Album,
+    val artist: Artist,
     val feats: List<Artist>?,
     val trackNumber: Int,
     val duration: Long, // in millisecond
     val size: Long,
-    val addedAt: Date,
+    val addedAt: Long,
     val source: Uri = ContentUris.withAppendedId(
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
         id

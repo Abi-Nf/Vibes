@@ -27,15 +27,10 @@ class ArtistRepository(
         )
     }
 
-    fun getArtists(): List<Artist> {
-        var list = mutableListOf<Artist>()
-        query()?.use {
-            val idColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Artists._ID)
-            while (it.moveToNext()) {
-                val idValue = it.getLong(idColumn)
-            }
+    fun getArtists(): MutableList<Artist>? {
+        return query()?.use {
+            it.toList()
         }
-        return list
     }
 
     fun getById(id: Long): Artist? {
