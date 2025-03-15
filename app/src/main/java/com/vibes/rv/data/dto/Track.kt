@@ -19,7 +19,7 @@ data class Track(
     val trackNumber: Int,
     val duration: Long, // in millisecond
     val size: Long,
-    val addedAt: Long,
+    val addedAt: Date,
     val source: Uri = ContentUris.withAppendedId(
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
         id

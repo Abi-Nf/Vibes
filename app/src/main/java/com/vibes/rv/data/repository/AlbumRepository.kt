@@ -1,10 +1,9 @@
 package com.vibes.rv.data.repository;
 
-import android.content.Context;
+import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 import com.vibes.rv.data.dto.Album
-import com.vibes.rv.data.dto.Artist
 
 public class AlbumRepository(
     private val context: Context

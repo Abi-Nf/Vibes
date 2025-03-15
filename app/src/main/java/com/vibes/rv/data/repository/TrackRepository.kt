@@ -4,7 +4,6 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 import com.vibes.rv.data.dto.Track
-import java.text.DateFormat
 import java.util.Date
 
 class TrackRepository(private val context: Context) {
@@ -43,7 +42,6 @@ class TrackRepository(private val context: Context) {
         return query(
             selection = "${MediaStore.Audio.Media._ID} = ?",
             selectionArgs = arrayOf(id.toString()),
-            sortOrder = "${MediaStore.Audio.Media.TITLE} DESC"
         )?.use {
             it.getOne(albumRepository, artistRepository)
         }
@@ -142,6 +140,6 @@ private fun Cursor.mapTrack(
         getInt(trackNumberIndex),
         getLong(durationIndex),
         getLong(sizeIndex),
-        getLong(addedAtIndex)
+        Date(getLong(addedAtIndex))
     )
 }
