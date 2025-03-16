@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.annotation.OptIn
+import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
@@ -23,7 +24,8 @@ data class Track(
     val source: Uri = ContentUris.withAppendedId(
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
         id
-    )
+    ),
+    val thumbnailUri: Uri? = "${source}/albumart}".toUri()
 ) {
     @OptIn(UnstableApi::class)
     fun toMediaItem(): MediaItem {
@@ -37,16 +39,16 @@ data class Track(
                     .setIsBrowsable(false)
                     .setIsPlayable(true)
                     .setTitle(title)
-                    .setArtist(album.artist.name)
+                    .setArtist(artist.name)
                     .setAlbumTitle(album.name)
-                    .setArtworkUri(album.image)
+                    .setArtworkUri(thumbnailUri)
                     .setDurationMs(duration)
                     .setTrackNumber(trackNumber)
                     .setExtras(
                         Bundle().apply {
                             putString("source", source.toString())
-                            putLong("album_id", album.artist.id)
-                            putLong("artist_id", album.id)
+                            putLong("album_id", album.id)
+                            putLong("artist_id", artist.id)
                             putLong("mediaId", id)
                             putLong("size", size)
                         }

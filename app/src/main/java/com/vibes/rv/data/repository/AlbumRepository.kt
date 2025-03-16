@@ -4,6 +4,8 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 import com.vibes.rv.data.dto.Album
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 public class AlbumRepository(
     private val context: Context
@@ -16,10 +18,6 @@ public class AlbumRepository(
     )
 
     private val artistRepository get() = ArtistRepository(context)
-
-    fun fromAlbumId(context: Context, id: String) {
-
-    }
 
     private fun query(
         selection: String? = null,
@@ -50,6 +48,10 @@ public class AlbumRepository(
             it.toList(artistRepository)
         }
     }
+
+    fun fetchAlbums(): Flow<List<Album>> = context.contentResolver
+        .observe(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI)
+        .map { getAllAlbums().orEmpty() }
 }
 
 private fun Cursor.toList(artistRepository: ArtistRepository): List<Album> {
