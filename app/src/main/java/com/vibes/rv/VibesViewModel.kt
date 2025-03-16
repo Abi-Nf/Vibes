@@ -15,11 +15,16 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
 import com.vibes.rv.data.VibesDatabase
+import com.vibes.rv.data.repository.AlbumRepository
+import com.vibes.rv.data.repository.ArtistRepository
+import com.vibes.rv.data.repository.TrackRepository
 import com.vibes.rv.service.PlaybackService
 import com.vibes.rv.ui.state.MusicState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -43,6 +48,24 @@ class VibesViewModel(
     ))
 
     val musicState = _musicState.asStateFlow()
+
+    val tracks = TrackRepository(application.applicationContext).fetchTracks().stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
+
+    val albums = AlbumRepository(application.applicationContext).fetchAlbums().stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
+
+    val artists = ArtistRepository(application.applicationContext).fetchArtists().stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
 
     init {
         val sessionToken = SessionToken(application, ComponentName(application, PlaybackService::class.java))

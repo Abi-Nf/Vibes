@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 import com.vibes.rv.data.dto.Artist
+import kotlinx.coroutines.flow.map
 
 class ArtistRepository(
     private val context: Context
@@ -40,6 +41,10 @@ class ArtistRepository(
             sortOrder = "${MediaStore.Audio.Artists.ARTIST} ASC"
         )?.use { it.getOne() }
     }
+
+    fun fetchArtists() = context.contentResolver
+        .observe(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI)
+        .map { getArtists() }
 }
 
 private fun Cursor.getOne(): Artist? {

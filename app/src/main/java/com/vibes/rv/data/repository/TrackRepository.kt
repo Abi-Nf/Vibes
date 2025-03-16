@@ -4,6 +4,8 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 import com.vibes.rv.data.dto.Track
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.util.Date
 
 class TrackRepository(private val context: Context) {
@@ -53,6 +55,9 @@ class TrackRepository(private val context: Context) {
         }
     }
 
+    fun fetchTracks(): Flow<List<Track>> = context.contentResolver
+        .observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
+            .map { getTracks().orEmpty() }
 }
 
 private fun Cursor.getOne(
