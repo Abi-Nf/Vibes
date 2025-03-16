@@ -8,6 +8,24 @@ fun Player.playAt(index: Int) {
     play()
 }
 
+fun Player.togglePlayPause() {
+    if(isPlaying) {
+        pause()
+    }else {
+        play()
+    }
+}
+
+fun Player.playPrev() {
+    seekToPrevious()
+    play()
+}
+
+fun Player.playNext() {
+    seekToNext()
+    play()
+}
+
 fun Player.addTrack(track: Track) {
     addMediaItem(track.toMediaItem())
 }
