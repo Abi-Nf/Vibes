@@ -16,6 +16,7 @@ object AppContext {
     val palette: CatppuccinPalette @Composable get() = LocalPalette.current
     val database: VibesDatabase @Composable get() = checkNotNull(LocalVibesModel.current).database
     val player: MediaController? @Composable get() = checkNotNull(LocalVibesModel.current).mediaController
+    val playerState @Composable get() = checkNotNull(LocalVibesModel.current).musicState
 }
 
 @Composable
