@@ -1,6 +1,7 @@
 package com.vibes.rv.ui.component.player
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,17 +25,24 @@ import com.composables.icons.lucide.StepBack
 import com.composables.icons.lucide.StepForward
 import com.vibes.rv.ui.component.Icon
 import com.vibes.rv.ui.provider.AppContext
+import com.vibes.rv.ui.state.MusicState
+import com.vibes.rv.util.player.playNext
+import com.vibes.rv.util.player.playPrev
+import com.vibes.rv.util.player.togglePlayPause
+import com.vibes.rv.util.player.toggleShuffle
+import com.vibes.rv.util.player.triggerLoop
 
 @Composable
-fun ColumnScope.PlayerControl() {
+fun ColumnScope.PlayerControl(musicState: MusicState) {
     val palette = AppContext.palette
+    val player = AppContext.player
 
     Row(
         Modifier.align(Alignment.CenterHorizontally),
         Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
         Alignment.CenterVertically
     ) {
-        SideButton {
+        SideButton({ player?.triggerLoop() }) {
             Icon(
                 Lucide.Repeat,
                 palette.text.one,
@@ -41,7 +50,7 @@ fun ColumnScope.PlayerControl() {
             )
         }
 
-        StepButton {
+        StepButton({ player?.playPrev() }) {
             Icon(
                 Lucide.StepBack,
                 palette.lavender,
@@ -52,17 +61,21 @@ fun ColumnScope.PlayerControl() {
         Box(
             Modifier
                 .clip(CircleShape)
+                .clickable(
+                    indication = null,
+                    interactionSource = null
+                ) { player?.togglePlayPause() }
                 .background(palette.surface.one)
                 .padding(16.dp)
         ) {
             Icon(
-                Icons.Rounded.PlayArrow,
+                if (musicState.isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
                 palette.roseWater,
                 Modifier.size(54.dp)
             )
         }
 
-        StepButton {
+        StepButton({ player?.playNext() }) {
             Icon(
                 Lucide.StepForward,
                 palette.lavender,
@@ -70,7 +83,7 @@ fun ColumnScope.PlayerControl() {
             )
         }
 
-        SideButton {
+        SideButton({ player?.toggleShuffle() }) {
             Icon(
                 Lucide.Shuffle,
                 palette.text.one,
@@ -82,11 +95,17 @@ fun ColumnScope.PlayerControl() {
 
 @Composable
 private fun StepButton(
+    onClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
     Box(
         Modifier
             .clip(RoundedCornerShape(22.dp))
+            .clickable(
+                indication = null,
+                interactionSource = null,
+                onClick = onClick
+            )
             .background(AppContext.palette.surface.one)
             .padding(14.dp)
     ) {
@@ -96,10 +115,16 @@ private fun StepButton(
 
 @Composable
 private fun SideButton(
+    onClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
     Box(
         Modifier
+            .clickable(
+                indication = null,
+                interactionSource = null,
+                onClick = onClick
+            )
             .padding(8.dp)
     ) {
         content()
