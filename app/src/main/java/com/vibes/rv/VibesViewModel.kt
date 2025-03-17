@@ -30,13 +30,14 @@ import kotlinx.coroutines.launch
 
 @Stable
 class VibesViewModel(
-    application: Application,
+    private val application: Application,
     val database: VibesDatabase,
 ): AndroidViewModel(application) {
     var mediaController: MediaController? by mutableStateOf(null)
         private set
 
     private val _musicState = MutableStateFlow<MusicState>(MusicState(
+        currentIndex = 0,
         currentTime = 0L,
         isPlaying = false,
         hasPrev = false,
@@ -49,19 +50,19 @@ class VibesViewModel(
 
     val musicState = _musicState.asStateFlow()
 
-    val tracks = TrackRepository(application.applicationContext).fetchTracks().stateIn(
+    val tracks get() = TrackRepository(application.applicationContext).fetchTracks().stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
 
-    val albums = AlbumRepository(application.applicationContext).fetchAlbums().stateIn(
+    val albums get() = AlbumRepository(application.applicationContext).fetchAlbums().stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
 
-    val artists = ArtistRepository(application.applicationContext).fetchArtists().stateIn(
+    val artists get() = ArtistRepository(application.applicationContext).fetchArtists().stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
@@ -75,7 +76,13 @@ class VibesViewModel(
                 addListener(
                     {
                         mediaController = get().apply {
-                            addListener(Handler())
+                            addListener(handler)
+                            _musicState.update {
+                                it.copy(
+                                    currentIndex = currentMediaItemIndex,
+                                    currentMedia = currentMediaItem
+                                )
+                            }
                         }
                     },
                     MoreExecutors.directExecutor()
@@ -85,23 +92,29 @@ class VibesViewModel(
 
     override fun onCleared() {
         super.onCleared()
+        mediaController?.removeListener(handler)
         mediaController?.release()
     }
 
-    private inner class Handler : Player.Listener {
+    private fun updateState(player: Player) {
+        _musicState.update { currentState ->
+            currentState.copy(
+                currentIndex = player.currentMediaItemIndex,
+                currentTime = player.currentPosition,
+                isPlaying = player.isPlaying,
+                hasPrev = player.hasPreviousMediaItem(),
+                hasNext = player.hasNextMediaItem(),
+                repeatMode = player.repeatMode,
+                isShuffle = player.shuffleModeEnabled,
+                playingQueueLength = player.mediaItemCount
+            )
+        }
+    }
+
+    private val handler = object : Player.Listener {
         override fun onEvents(player: Player, events: Player.Events) {
             super.onEvents(player, events)
-            _musicState.update { currentState ->
-                currentState.copy(
-                    currentTime = player.currentPosition,
-                    isPlaying = player.isPlaying,
-                    hasPrev = player.hasPreviousMediaItem(),
-                    hasNext = player.hasNextMediaItem(),
-                    repeatMode = player.repeatMode,
-                    isShuffle = player.shuffleModeEnabled,
-                    playingQueueLength = player.mediaItemCount
-                )
-            }
+            updateState(player)
 
             if(player.isPlaying) {
                 viewModelScope.launch {
@@ -111,7 +124,7 @@ class VibesViewModel(
                                 currentTime = player.currentPosition
                             )
                         }
-                        delay(1)
+                        delay(500)
                     }
                 }
             }
