@@ -15,21 +15,24 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composables.icons.lucide.Disc3
 import com.composables.icons.lucide.Lucide
-import com.composables.icons.lucide.UserRound
 import com.vibes.rv.data.dto.Album
 import com.vibes.rv.data.repository.TrackRepository
+import com.vibes.rv.ui.component.AsyncThumbnail
 import com.vibes.rv.ui.component.Icon
 import com.vibes.rv.ui.provider.AppContext
 import com.vibes.rv.util.player.addTracks
@@ -85,8 +88,9 @@ private fun CardAlbum(album: Album, onClick: () -> Unit) {
 
     Column(
         Modifier
-            .clickable(onClick = onClick)
             .padding(4.dp)
+            .clickable(onClick = onClick),
+        Arrangement.spacedBy(4.dp)
     ) {
         Box(
             Modifier
@@ -94,11 +98,20 @@ private fun CardAlbum(album: Album, onClick: () -> Unit) {
                 .background(colorScheme.surfaceVariant, CircleShape),
             Alignment.Center
         ) {
-            Icon(
-                Lucide.UserRound,
-                colorScheme.onSurface,
-                Modifier.fillMaxSize(0.7f)
-            )
+            AsyncThumbnail(
+                album.image,
+                900,
+                900,
+                Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(12.dp))
+            ) {
+                Icon(
+                    Lucide.Disc3,
+                    colorScheme.onSurface,
+                    Modifier.fillMaxSize(0.7f)
+                )
+            }
         }
 
         Text(
