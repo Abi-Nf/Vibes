@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,21 +39,6 @@ fun PlayerSlider(
             tempSliderValue ?: currentTime.toFloat(),
             { tempSliderValue = it },
             Modifier.fillMaxWidth(),
-            colors = SliderColors(
-                activeTrackColor = palette.blue,
-                activeTickColor = palette.blue,
-
-                inactiveTrackColor = palette.lavender,
-                inactiveTickColor = palette.lavender,
-
-                thumbColor = palette.blue,
-
-                disabledThumbColor = palette.surface.two,
-                disabledActiveTrackColor = palette.surface.three,
-                disabledActiveTickColor = palette.surface.two,
-                disabledInactiveTrackColor = palette.surface.one,
-                disabledInactiveTickColor = palette.surface.one
-            ),
             valueRange = 0f..duration.toFloat(),
             onValueChangeFinished = {
                 tempSliderValue?.let { player?.seekTo(it.toLong()) }
@@ -71,13 +55,13 @@ fun PlayerSlider(
 
             Text(
                 currentTime.toReadableTime(),
-                color = palette.text.two,
+                color = MaterialTheme.colorScheme.surfaceBright,
                 style = style
             )
 
             Text(
                 duration.toReadableTime(),
-                color = palette.text.two,
+                color = MaterialTheme.colorScheme.surfaceBright,
                 style = style
             )
         }

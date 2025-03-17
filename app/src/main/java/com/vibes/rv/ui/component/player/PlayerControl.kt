@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +35,6 @@ import com.vibes.rv.util.player.triggerLoop
 
 @Composable
 fun ColumnScope.PlayerControl(musicState: MusicState) {
-    val palette = AppContext.palette
     val player = AppContext.player
 
     Row(
@@ -45,7 +45,7 @@ fun ColumnScope.PlayerControl(musicState: MusicState) {
         SideButton({ player?.triggerLoop() }) {
             Icon(
                 Lucide.Repeat,
-                palette.text.one,
+                MaterialTheme.colorScheme.inverseSurface,
                 Modifier.size(26.dp)
             )
         }
@@ -53,7 +53,7 @@ fun ColumnScope.PlayerControl(musicState: MusicState) {
         StepButton({ player?.playPrev() }) {
             Icon(
                 Lucide.StepBack,
-                palette.lavender,
+                MaterialTheme.colorScheme.secondary,
                 Modifier.size(30.dp)
             )
         }
@@ -65,12 +65,12 @@ fun ColumnScope.PlayerControl(musicState: MusicState) {
                     indication = null,
                     interactionSource = null
                 ) { player?.togglePlayPause() }
-                .background(palette.surface.one)
+                .background(MaterialTheme.colorScheme.surfaceTint)
                 .padding(16.dp)
         ) {
             Icon(
                 if (musicState.isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                palette.roseWater,
+                MaterialTheme.colorScheme.tertiary,
                 Modifier.size(54.dp)
             )
         }
@@ -78,7 +78,7 @@ fun ColumnScope.PlayerControl(musicState: MusicState) {
         StepButton({ player?.playNext() }) {
             Icon(
                 Lucide.StepForward,
-                palette.lavender,
+                MaterialTheme.colorScheme.secondary,
                 Modifier.size(30.dp)
             )
         }
@@ -86,7 +86,7 @@ fun ColumnScope.PlayerControl(musicState: MusicState) {
         SideButton({ player?.toggleShuffle() }) {
             Icon(
                 Lucide.Shuffle,
-                palette.text.one,
+                MaterialTheme.colorScheme.inverseSurface,
                 Modifier.size(26.dp)
             )
         }
@@ -106,7 +106,7 @@ private fun StepButton(
                 interactionSource = null,
                 onClick = onClick
             )
-            .background(AppContext.palette.surface.one)
+            .background(MaterialTheme.colorScheme.surfaceTint)
             .padding(14.dp)
     ) {
         content()

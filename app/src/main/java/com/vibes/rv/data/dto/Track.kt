@@ -25,7 +25,7 @@ data class Track(
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
         id
     ),
-    val thumbnailUri: Uri? = "${source}/albumart}".toUri()
+    val thumbnailUri: Uri? = "${source}/albumart".toUri()
 ) {
     @OptIn(UnstableApi::class)
     fun toMediaItem(): MediaItem {

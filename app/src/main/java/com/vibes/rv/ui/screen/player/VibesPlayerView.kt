@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -78,15 +79,13 @@ internal fun ColumnScope.VibesPlayerView(
                     label = "player-item-scale"
                 )
 
-                val palette = AppContext.palette
-
                 Box(
                     Modifier
                         .scale(scale)
                         .fillMaxWidth()
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(itemRoundness))
-                        .background(palette.surface.two),
+                        .background(MaterialTheme.colorScheme.surfaceTint),
                     Alignment.Center
                 ) {
                     AsyncImage(
@@ -95,7 +94,7 @@ internal fun ColumnScope.VibesPlayerView(
                     ) {
                         Icon(
                             Lucide.Music3,
-                            palette.text.two,
+                            MaterialTheme.colorScheme.secondary,
                             Modifier.fillMaxSize(0.6f)
                         )
                     }

@@ -30,7 +30,6 @@ import com.composables.icons.lucide.ListMusic
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.UsersRound
 import com.vibes.rv.ui.Destination
-import com.vibes.rv.ui.provider.AppContext
 import com.vibes.rv.ui.util.isActive
 
 @Composable
@@ -93,7 +92,6 @@ private fun <T: Destination> BottomTabBarScope.Navigable(
     label: String,
     destination: T
 ){
-    val palette = AppContext.palette
     val isActive by isActive(destination)
 
     Column(
@@ -104,7 +102,7 @@ private fun <T: Destination> BottomTabBarScope.Navigable(
         Alignment.CenterHorizontally
     ) {
         val color by animateColorAsState(
-            if(isActive) palette.blue else palette.text.one,
+            if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inverseSurface,
             label = "nav-bar-button-color"
         )
 
