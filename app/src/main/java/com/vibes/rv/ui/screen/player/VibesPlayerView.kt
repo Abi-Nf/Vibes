@@ -1,9 +1,13 @@
 package com.vibes.rv.ui.screen.player
 
+import android.content.ContentUris
+import android.provider.MediaStore
+import android.util.Size
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
@@ -25,10 +29,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Music3
-import com.vibes.rv.ui.component.AsyncImage
 import com.vibes.rv.ui.component.Icon
 import com.vibes.rv.ui.layout.vibe_layout.VibeBarState
 import com.vibes.rv.ui.provider.AppContext
@@ -44,10 +49,21 @@ internal fun ColumnScope.VibesPlayerView(
     status: VibeBarState,
     heightPercent: Float
 ) {
+    val contentResolver = LocalContext.current.contentResolver
     val player = AppContext.player
     val coroutineScope = rememberCoroutineScope()
     val transition = updateTransition(status, "player-status-content")
-    val pagerState = rememberPagerState { musicState.playingQueueLength }
+    val pagerState = rememberPagerState() { musicState.playingQueueLength }
+
+    LaunchedEffect(musicState.currentIndex) {
+        coroutineScope.launch {
+            player?.let { player ->
+                if(player.currentMediaItemIndex != pagerState.currentPage){
+                    pagerState.scrollToPage(musicState.currentIndex)
+                }
+            }
+        }
+    }
 
     LaunchedEffect(pagerState.currentPage) {
         coroutineScope.launch {
@@ -88,10 +104,21 @@ internal fun ColumnScope.VibesPlayerView(
                         .background(MaterialTheme.colorScheme.surfaceTint),
                     Alignment.Center
                 ) {
-                    AsyncImage(
-                        AppContext.player?.getMediaItemAt(it)?.mediaMetadata?.artworkUri,
-                        Modifier.fillMaxSize()
-                    ) {
+                    val albumId = AppContext.player?.getMediaItemAt(it)?.mediaMetadata?.extras?.getLong("album_id")
+                    if(albumId != null) {
+                        val uri = ContentUris.withAppendedId(
+                            MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                            albumId
+                        )
+                        val image = contentResolver
+                            .loadThumbnail(
+                                uri,
+                                Size(800, 800),
+                                null
+                            )
+                            .asImageBitmap()
+                        Image(image, "", Modifier.fillMaxSize())
+                    }else {
                         Icon(
                             Lucide.Music3,
                             MaterialTheme.colorScheme.secondary,

@@ -5,6 +5,7 @@ import androidx.media3.common.MediaItem
 
 @Stable
 data class MusicState(
+    val currentIndex: Int,
     val currentTime: Long,
     val isPlaying: Boolean,
     val hasPrev: Boolean,
