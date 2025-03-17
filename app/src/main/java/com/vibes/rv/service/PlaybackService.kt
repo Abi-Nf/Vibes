@@ -24,7 +24,7 @@ class PlaybackService : MediaSessionService() {
         super.onCreate()
         setMediaNotificationProvider(
             DefaultMediaNotificationProvider.Builder(this).build().apply {
-                setSmallIcon(R.mipmap.ic_launcher_round)
+                setSmallIcon(R.drawable.vibe_icon)
             }
         )
 
