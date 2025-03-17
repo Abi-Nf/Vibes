@@ -1,5 +1,6 @@
 package com.vibes.rv.data.repository;
 
+import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
@@ -89,10 +90,14 @@ private fun Cursor.mapAlbum(
     yearIndex: Int,
     artistRepository: ArtistRepository
 ): Album {
+    val id = getLong(idIndex)
     return Album(
-        getLong(idIndex),
+        id,
         getString(nameIndex),
-        null,
+        ContentUris.withAppendedId(
+            MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+            id
+        ),
         artistRepository.getById(getLong(artistIndex)) ?: UNKNOWN_ARTIST,
         getInt(yearIndex),
         listOf()
