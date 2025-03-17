@@ -29,7 +29,7 @@ class TrackRepository(private val context: Context) {
     private fun query(
         selection: String? = null,
         selectionArgs: Array<String>? = null,
-        sortOrder: String? = "${MediaStore.Audio.Media.TITLE} DESC"
+        sortOrder: String? = "${MediaStore.Audio.Media.TITLE} ASC"
     ): Cursor? {
         return context.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -58,6 +58,24 @@ class TrackRepository(private val context: Context) {
     fun fetchTracks(): Flow<List<Track>> = context.contentResolver
         .observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
             .map { getTracks().orEmpty() }
+
+    fun getAllByArtistId(artistId: Long): List<Track> {
+        return query(
+            selection = "${MediaStore.Audio.Media.ARTIST_ID} = ?",
+            selectionArgs = arrayOf(artistId.toString()),
+        )?.use {
+            it.toList(albumRepository, artistRepository)
+        } ?: emptyList()
+    }
+
+    fun getAllByAlbumId(albumId: Long): List<Track> {
+        return query(
+            selection = "${MediaStore.Audio.Media.ALBUM_ID} = ?",
+            selectionArgs = arrayOf(albumId.toString()),
+        )?.use {
+            it.toList(albumRepository, artistRepository)
+        } ?: emptyList()
+    }
 }
 
 private fun Cursor.getOne(
