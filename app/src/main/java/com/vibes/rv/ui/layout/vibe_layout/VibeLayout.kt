@@ -5,12 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.vibes.rv.ui.provider.AppContext
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -20,7 +20,7 @@ fun VibeLayout(
     Box(
         Modifier
             .fillMaxSize()
-            .background(AppContext.palette.crust)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         val model = viewModel { VibeLayoutViewModel() }
         val scope = remember { VibeBarScopeImpl(model, this@Box) }

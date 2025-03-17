@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lyrics
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,25 +40,26 @@ fun ColumnScope.PlayerPanel(
             .align(Alignment.CenterHorizontally)
             .fillMaxWidth(0.8f)
             .clip(RoundedCornerShape(18.dp))
-            .background(palette.surface.two)
+            .background(MaterialTheme.colorScheme.surfaceTint)
             .padding(8.dp),
         Arrangement.SpaceAround,
         Alignment.CenterVertically
     ) {
+        val iconColor = MaterialTheme.colorScheme.inverseSurface
         Button(onClickCut) {
-            Icon(Lucide.Scissors, palette.text.two)
+            Icon(Lucide.Scissors, iconColor)
         }
         Button(onClickLyrics) {
-            Icon(Icons.Outlined.Lyrics, palette.text.two)
+            Icon(Icons.Outlined.Lyrics, iconColor)
         }
         Button(onClickPlayingQueue) {
-            Icon(Lucide.ChevronUp, palette.text.two)
+            Icon(Lucide.ChevronUp, iconColor)
         }
         Button(onClickTimer) {
-            Icon(Lucide.MoonStar, palette.text.two)
+            Icon(Lucide.MoonStar, iconColor)
         }
         Button(onClickMenu) {
-            Icon(Lucide.EllipsisVertical, palette.text.two)
+            Icon(Lucide.EllipsisVertical, iconColor)
         }
     }
 }

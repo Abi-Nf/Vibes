@@ -22,7 +22,6 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Origami
 import com.composables.icons.lucide.TrendingUp
 import com.vibes.rv.ui.component.Icon
-import com.vibes.rv.ui.provider.AppContext
 import com.vibes.rv.ui.util.color.interpolate
 
 @Composable
@@ -32,12 +31,10 @@ internal fun Shortcut() {
         Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         Alignment.CenterVertically
     ) {
-        val palette = AppContext.palette
-
-        Button(Lucide.History, "History", palette.blue)
-        Button(Lucide.HeartPulse, "Favorites", palette.red)
-        Button(Lucide.TrendingUp, "Wrapped", palette.green)
-        Button(Lucide.Origami, "Surprise me", palette.mauve)
+        Button(Lucide.History, "History", MaterialTheme.colorScheme.primary)
+        Button(Lucide.HeartPulse, "Favorites", MaterialTheme.colorScheme.secondary)
+        Button(Lucide.TrendingUp, "Wrapped", MaterialTheme.colorScheme.tertiary)
+        Button(Lucide.Origami, "Surprise me", MaterialTheme.colorScheme.error)
     }
 }
 
@@ -47,13 +44,11 @@ private fun RowScope.Button(
     label: String,
     color: Color
 ) {
-    val palette = AppContext.palette
-
     Column(
         Modifier
             .weight(1f)
             .clip(RoundedCornerShape(12.dp))
-            .background(palette.crust.interpolate(color, 0.25f))
+            .background(MaterialTheme.colorScheme.surface.interpolate(color, 0.15f))
             .padding(4.dp, 16.dp)
         ,
         Arrangement.spacedBy(8.dp, Alignment.CenterVertically),

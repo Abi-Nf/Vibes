@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -146,7 +147,7 @@ internal fun BoxScope.VibeBar(
                     setStatus(value)
                 },
                 onClick = {
-                    if(status != VibeBarState.FULLSCREEN){
+                    if (status != VibeBarState.FULLSCREEN) {
                         val value =
                             if (status == VibeBarState.NORMAL) VibeBarState.FULLSCREEN
                             else VibeBarState.NORMAL
@@ -171,7 +172,7 @@ internal fun BoxScope.VibeBar(
         Column(
             Modifier
                 .matchParentSize()
-                .background(AppContext.palette.base)
+                .background(MaterialTheme.colorScheme.background)
         ) {
             val heightPercent by rememberUpdatedState(dragHeight.value)
 

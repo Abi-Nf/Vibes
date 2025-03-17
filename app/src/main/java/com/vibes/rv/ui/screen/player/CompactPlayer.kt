@@ -52,7 +52,7 @@ internal fun BoxScope.CompactPlayer(
             Text(
                 musicState.currentMedia?.mediaMetadata?.title.toString(),
                 Modifier.basicMarquee(),
-                palette.lavender,
+                MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyLarge
             )
 
@@ -72,18 +72,18 @@ internal fun BoxScope.CompactPlayer(
                 val player = AppContext.player
 
                 Button({ player?.playPrev() }, musicState.hasPrev) {
-                    Icon(Lucide.StepBack, palette.text.three)
+                    Icon(Lucide.StepBack, MaterialTheme.colorScheme.surfaceTint)
                 }
 
                 Button({ player?.togglePlayPause() }) {
                     Icon(
                         if(musicState.isPlaying) Lucide.Pause else Lucide.Play,
-                        palette.text.one
+                        MaterialTheme.colorScheme.inverseSurface
                     )
                 }
 
                 Button({ player?.playNext() }, musicState.hasNext) {
-                    Icon(Lucide.StepForward, palette.text.three)
+                    Icon(Lucide.StepForward, MaterialTheme.colorScheme.surfaceTint)
                 }
             }
         }

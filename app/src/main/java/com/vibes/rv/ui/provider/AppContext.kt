@@ -1,13 +1,13 @@
 package com.vibes.rv.ui.provider
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.media3.session.MediaController
+import com.shifthackz.catppuccin.compose.CatppuccinMaterial
+import com.shifthackz.catppuccin.compose.CatppuccinTheme
+import com.shifthackz.catppuccin.palette.Catppuccin
 import com.vibes.rv.VibesViewModel
 import com.vibes.rv.data.VibesDatabase
-import com.vibes.rv.ui.theme.CatppuccinColor
-import com.vibes.rv.ui.theme.Typo
 import com.vibes.rv.ui.theme.catppuccin.CatppuccinPalette
 import com.vibes.rv.ui.util.isUserAppDark
 import com.vibes.rv.ui.util.rememberAndMap
@@ -27,14 +27,17 @@ fun ProvideAppContext(
     vibesViewModel: VibesViewModel,
     content: @Composable () -> Unit
 ) {
-    val palette = rememberAndMap(isUserAppDark()) { CatppuccinColor.getPalette(it) }
+    val palette = rememberAndMap(isUserAppDark()) { it ->
+        if (it) CatppuccinMaterial.Mocha(
+            primary = Catppuccin.Mocha.Mauve
+        ) else CatppuccinMaterial.Latte(
+            primary = Catppuccin.Latte.Mauve
+        )
+    }
 
     CompositionLocalProvider(
-        LocalPalette provides palette,
         LocalVibesModel provides vibesViewModel
     ) {
-        MaterialTheme(
-            typography = Typo
-        ) { content() }
+        CatppuccinTheme.Palette(palette) { content() }
     }
 }

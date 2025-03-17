@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,17 +47,15 @@ internal fun Header() {
 
 @Composable
 private fun UserButton() {
-    val palette = AppContext.palette
-
     Box(
         Modifier
             .size(46.dp)
             .clip(CircleShape)
-            .background(palette.surface.one)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Icon(
             Lucide.UserRound,
-            palette.text.two,
+            MaterialTheme.colorScheme.inverseSurface,
             Modifier.align(Alignment.Center)
         )
     }
@@ -73,7 +72,7 @@ private fun Button(
     ) {
         Icon(
             icon,
-            palette.text.two
+            MaterialTheme.colorScheme.inverseSurface
         )
     }
 }

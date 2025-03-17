@@ -24,7 +24,6 @@ import com.vibes.rv.ui.component.Icon
 import com.vibes.rv.ui.component.player.PlayerControl
 import com.vibes.rv.ui.component.player.PlayerPanel
 import com.vibes.rv.ui.component.player.PlayerSlider
-import com.vibes.rv.ui.provider.AppContext
 import com.vibes.rv.ui.state.MusicState
 
 @OptIn(UnstableApi::class)
@@ -38,8 +37,6 @@ internal fun ColumnScope.Controls(musicState: MusicState) {
         ,
         Arrangement.SpaceBetween
     ) {
-        val palette = AppContext.palette
-
         Row(
             Modifier
                 .padding(horizontal = 26.dp, vertical = 8.dp)
@@ -55,21 +52,21 @@ internal fun ColumnScope.Controls(musicState: MusicState) {
                 Text(
                     musicState.currentMedia?.mediaMetadata?.title.toString(),
                     Modifier.basicMarquee(),
-                    palette.text.principal,
+                    MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleLarge
                 )
 
                 Text(
                     musicState.currentMedia?.mediaMetadata?.artist.toString(),
                     Modifier.basicMarquee(),
-                    palette.lavender,
+                    MaterialTheme.colorScheme.surfaceBright,
                     style = MaterialTheme.typography.titleSmall
                 )
             }
 
             Icon(
                 Lucide.Heart,
-                palette.text.principal,
+                MaterialTheme.colorScheme.inverseSurface,
                 Modifier.size(28.dp)
             )
         }

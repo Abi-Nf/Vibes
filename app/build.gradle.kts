@@ -59,6 +59,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    val catppuccinVersion = "0.1.2"
+    implementation("com.github.ShiftHackZ:Catppuccin-Android-Library:$catppuccinVersion")
+
 
     val media3Version = "1.5.1"
     implementation("androidx.media3:media3-session:$media3Version")
