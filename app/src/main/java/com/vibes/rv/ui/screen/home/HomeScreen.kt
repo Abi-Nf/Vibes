@@ -14,7 +14,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vibes.rv.data.dto.Track
 import com.vibes.rv.ui.provider.AppContext
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +32,7 @@ fun HomeScreen() {
         val coroutineContext = rememberCoroutineScope()
 
         // ૮(˶ㅠ︿ㅠ)ა This seems to be not working !!!
-        LaunchedEffect(trackFlow.collectAsStateWithLifecycle()) {
+        LaunchedEffect(null) {
             coroutineContext.launch(Dispatchers.IO) {
                 trackFlow.collect {
                     tracks = it

@@ -15,6 +15,7 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
 import com.vibes.rv.data.VibesDatabase
+import com.vibes.rv.data.model.PlaylistItem
 import com.vibes.rv.data.repository.AlbumRepository
 import com.vibes.rv.data.repository.ArtistRepository
 import com.vibes.rv.data.repository.TrackRepository
@@ -23,6 +24,7 @@ import com.vibes.rv.ui.state.MusicState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -63,6 +65,12 @@ class VibesViewModel(
     )
 
     val artists get() = ArtistRepository(application.applicationContext).fetchArtists().stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
+
+    val playlists = database.playlistDao.getPlaylists().stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
@@ -110,6 +118,7 @@ class VibesViewModel(
             )
         }
     }
+
 
     private val handler = object : Player.Listener {
         override fun onEvents(player: Player, events: Player.Events) {

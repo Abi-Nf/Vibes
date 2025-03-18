@@ -43,7 +43,7 @@ fun AsyncThumbnail(
                         Size(width, height),
                         null
                     ).asImageBitmap()
-                }catch (_: Exception) {
+                } catch (_: Exception) {
                     null
                 }
             }
