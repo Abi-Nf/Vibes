@@ -20,6 +20,7 @@ object AppContext {
     val albums @Composable get() = checkNotNull(LocalVibesModel.current).albums
     val artists @Composable get() = checkNotNull(LocalVibesModel.current).artists
     val tracks @Composable get() = checkNotNull(LocalVibesModel.current).tracks
+    val playlists @Composable get() = checkNotNull(LocalVibesModel.current).playlists
 }
 
 @Composable

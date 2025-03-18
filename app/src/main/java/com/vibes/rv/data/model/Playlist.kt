@@ -11,6 +11,5 @@ data class Playlist(
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,
     val name: String,
-    val image: Uri,
     val addedAt: Instant = now()
 )

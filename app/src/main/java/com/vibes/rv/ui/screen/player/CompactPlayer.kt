@@ -72,7 +72,7 @@ internal fun BoxScope.CompactPlayer(
                 val player = AppContext.player
 
                 Button({ player?.playPrev() }, musicState.hasPrev) {
-                    Icon(Lucide.StepBack, MaterialTheme.colorScheme.surfaceTint)
+                    Icon(Lucide.StepBack, MaterialTheme.colorScheme.inverseSurface)
                 }
 
                 Button({ player?.togglePlayPause() }) {
@@ -83,7 +83,7 @@ internal fun BoxScope.CompactPlayer(
                 }
 
                 Button({ player?.playNext() }, musicState.hasNext) {
-                    Icon(Lucide.StepForward, MaterialTheme.colorScheme.surfaceTint)
+                    Icon(Lucide.StepForward, MaterialTheme.colorScheme.inverseSurface)
                 }
             }
         }
