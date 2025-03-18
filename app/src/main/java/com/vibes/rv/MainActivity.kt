@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -47,7 +49,8 @@ class MainActivity : ComponentActivity() {
 }
 
 private fun MainActivity.onDeniedPermissions() {
-    requestPermissions()
+    Toast.makeText(this, "Please grant all permissions", Toast.LENGTH_LONG).show()
+    this.finish()
 }
 
 private fun MainActivity.onGrantedPermissions() {
@@ -59,5 +62,13 @@ private fun MainActivity.onGrantedPermissions() {
 }
 
 private fun MainActivity.requestPermissions() {
-    requestActivityLauncher.launch(permissions)
+    val allPermissionsGranted = permissions.all {
+        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    if (allPermissionsGranted) {
+        onGrantedPermissions()
+    } else {
+        requestActivityLauncher.launch(permissions)
+    }
 }
