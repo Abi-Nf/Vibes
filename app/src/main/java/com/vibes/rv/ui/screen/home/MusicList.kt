@@ -2,7 +2,6 @@ package com.vibes.rv.ui.screen.home
 
 import android.content.Context
 import android.util.Size
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,36 +27,37 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.common.MediaItem
+import coil3.compose.AsyncImage
+import com.composables.icons.lucide.Disc3
 import com.composables.icons.lucide.EllipsisVertical
 import com.composables.icons.lucide.Lucide
-import com.composables.icons.lucide.Music3
 import com.composables.icons.lucide.Plus
-import com.vibes.rv.data.dto.Track
+import com.shifthackz.catppuccin.palette.Catppuccin
+import com.vibes.rv.ui.component.AsyncThumbnail
 import com.vibes.rv.ui.component.Icon
 import com.vibes.rv.ui.provider.AppContext
 import com.vibes.rv.ui.util.color.interpolate
 import com.vibes.rv.util.player.playAt
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.vibes.rv.util.requestImage
 
 @Composable
-fun MusicList(tracks: List<Track>) {
+fun MusicList(tracks: List<MediaItem>) {
     val context = LocalContext.current
     val player = AppContext.player
     var lazyColumnState = rememberLazyListState()
@@ -96,13 +95,11 @@ fun MusicList(tracks: List<Track>) {
             ) {
                 itemsIndexed(tracks) { index, item ->
                     val playerState by AppContext.playerState.collectAsStateWithLifecycle()
-                    val isPlaying = playerState.currentMedia?.mediaId == item.toMediaItem().mediaId
+                    val isPlaying = playerState.currentMedia?.mediaId == item.mediaId
                     MusicListItem(context, item, isPlaying) {
                         player?.apply {
                             clearMediaItems()
-                            setMediaItems(tracks.map {
-                                it.toMediaItem()
-                            })
+                            setMediaItems(tracks)
                             playAt(index)
                         }
                     }
@@ -117,25 +114,10 @@ fun MusicList(tracks: List<Track>) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MusicListItem(context: Context, track: Track, isPlaying: Boolean, onClick: () -> Unit) {
-    var imageThumbnail by remember { mutableStateOf<ImageBitmap?>(null) }
+fun MusicListItem(context: Context, track: MediaItem, isPlaying: Boolean, onClick: () -> Unit) {
     var menuIsOpen by remember { mutableStateOf(false) }
     var playlistModalEnabled by remember { mutableStateOf(false) }
     val modalState = rememberModalBottomSheetState()
-
-    LaunchedEffect(track.thumbnailUri) {
-        imageThumbnail = withContext(Dispatchers.IO) {
-            try {
-                return@withContext context.contentResolver.loadThumbnail(
-                    track.source,
-                    Size(80, 80),
-                    null
-                ).asImageBitmap()
-            } catch (e: Exception) {
-                return@withContext null
-            }
-        }
-    }
 
     Card(
         Modifier
@@ -170,30 +152,32 @@ fun MusicListItem(context: Context, track: Track, isPlaying: Boolean, onClick: (
                         .size(35.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (imageThumbnail != null) {
-                        Image(
-                            imageThumbnail!!,
-                            null,
-                            Modifier.fillMaxWidth()
+                    if (track.mediaMetadata.artworkUri != null) {
+                        AsyncImage(
+                            model = requestImage(
+                                track.mediaMetadata.artworkUri!!,
+                                context,
+                                Size(80,80),
+                            ),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
                         )
                     } else {
-                        Icon(
-                            Lucide.Music3,
-                            MaterialTheme.colorScheme.tertiaryContainer,
-                        )
+                        Icon(Lucide.Disc3, Catppuccin.Latte.Overlay2)
                     }
                 }
             },
             headlineContent = {
                 Text(
-                    track.title,
+                    track.mediaMetadata.title.toString(),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
             },
             supportingContent = {
                 Text(
-                    track.artist.name,
+                    track.mediaMetadata.artist.toString(),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )

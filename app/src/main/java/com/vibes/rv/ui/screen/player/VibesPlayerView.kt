@@ -1,7 +1,5 @@
 package com.vibes.rv.ui.screen.player
 
-import android.content.ContentUris
-import android.provider.MediaStore
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
@@ -27,11 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Disc3
 import com.composables.icons.lucide.Lucide
-import com.composables.icons.lucide.Music3
+import com.shifthackz.catppuccin.palette.Catppuccin
 import com.vibes.rv.ui.component.AsyncThumbnail
 import com.vibes.rv.ui.component.Icon
 import com.vibes.rv.ui.layout.vibe_layout.VibeBarState
@@ -48,7 +45,6 @@ internal fun ColumnScope.VibesPlayerView(
     status: VibeBarState,
     heightPercent: Float
 ) {
-    val contentResolver = LocalContext.current.contentResolver
     val player = AppContext.player
     val coroutineScope = rememberCoroutineScope()
     val transition = updateTransition(status, "player-status-content")
@@ -103,29 +99,19 @@ internal fun ColumnScope.VibesPlayerView(
                         .background(MaterialTheme.colorScheme.surfaceTint),
                     Alignment.Center
                 ) {
-                    val albumId = AppContext.player?.getMediaItemAt(it)?.mediaMetadata?.extras?.getLong("album_id")
-                    if(albumId != null) {
-                        val uri = ContentUris.withAppendedId(
-                            MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                            albumId
-                        )
-                        AsyncThumbnail(
-                            uri,
-                            800,
-                            800,
-                            Modifier.fillMaxSize()
-                        ) {
-                            Icon(
-                                Lucide.Disc3,
-                                MaterialTheme.colorScheme.onSurface,
-                                Modifier.fillMaxSize(0.7f)
-                            )
-                        }
-                    }else {
+                    val artworkUri =
+                        AppContext.player?.getMediaItemAt(it)?.mediaMetadata?.artworkUri
+
+                    AsyncThumbnail(
+                        artworkUri,
+                        Modifier.fillMaxSize(),
+                        800,
+                        800
+                    ) {
                         Icon(
-                            Lucide.Music3,
-                            MaterialTheme.colorScheme.secondary,
-                            Modifier.fillMaxSize(0.6f)
+                            Lucide.Disc3,
+                            Catppuccin.Latte.Overlay2,
+                            Modifier.fillMaxSize(0.7f)
                         )
                     }
                 }

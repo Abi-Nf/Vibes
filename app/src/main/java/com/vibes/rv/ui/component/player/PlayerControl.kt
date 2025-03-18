@@ -15,12 +15,16 @@ import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.common.Player
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Repeat
+import com.composables.icons.lucide.Repeat1
 import com.composables.icons.lucide.Shuffle
 import com.composables.icons.lucide.StepBack
 import com.composables.icons.lucide.StepForward
@@ -36,6 +40,7 @@ import com.vibes.rv.util.player.triggerLoop
 @Composable
 fun ColumnScope.PlayerControl(musicState: MusicState) {
     val player = AppContext.player
+    val playerState by AppContext.playerState.collectAsStateWithLifecycle()
 
     Row(
         Modifier.align(Alignment.CenterHorizontally),
@@ -44,8 +49,8 @@ fun ColumnScope.PlayerControl(musicState: MusicState) {
     ) {
         SideButton({ player?.triggerLoop() }) {
             Icon(
-                Lucide.Repeat,
-                MaterialTheme.colorScheme.inverseSurface,
+                if (playerState.repeatMode == Player.REPEAT_MODE_ONE) Lucide.Repeat1 else Lucide.Repeat,
+                if (playerState.repeatMode == Player.REPEAT_MODE_OFF) MaterialTheme.colorScheme.surfaceTint else MaterialTheme.colorScheme.inverseSurface,
                 Modifier.size(26.dp)
             )
         }
@@ -86,7 +91,7 @@ fun ColumnScope.PlayerControl(musicState: MusicState) {
         SideButton({ player?.toggleShuffle() }) {
             Icon(
                 Lucide.Shuffle,
-                MaterialTheme.colorScheme.inverseSurface,
+                if(playerState.isShuffle) MaterialTheme.colorScheme.inverseSurface else MaterialTheme.colorScheme.surfaceTint,
                 Modifier.size(26.dp)
             )
         }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.media3.common.MediaItem
 import com.vibes.rv.data.dto.Track
 import com.vibes.rv.ui.provider.AppContext
 import kotlinx.coroutines.Dispatchers
@@ -27,15 +28,16 @@ fun HomeScreen() {
             .statusBarsPadding()
     ) {
         val trackFlow = AppContext.tracks
-        var tracks by remember { mutableStateOf<List<Track>>(emptyList()) }
+        var tracks by remember { mutableStateOf<List<MediaItem>>(emptyList()) }
         var isLoading by remember { mutableStateOf<Boolean>(true) }
         val coroutineContext = rememberCoroutineScope()
 
         // ૮(˶ㅠ︿ㅠ)ა This seems to be not working !!!
-        LaunchedEffect(null) {
+        LaunchedEffect(Unit) {
             coroutineContext.launch(Dispatchers.IO) {
-                trackFlow.collect {
-                    tracks = it
+                trackFlow
+                    .collect {
+                    tracks = it.map { it.toMediaItem() }
                     isLoading = false
                 }
             }

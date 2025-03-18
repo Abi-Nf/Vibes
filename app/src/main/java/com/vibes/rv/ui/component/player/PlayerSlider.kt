@@ -26,7 +26,6 @@ fun PlayerSlider(
     currentTime: Long,
     duration: Long
 ) {
-    val palette = AppContext.palette
     val player = AppContext.player
 
     Column(

@@ -83,8 +83,13 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.1.2")
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+    implementation(libs.coil.compose)
 
     implementation("androidx.core:core-splashscreen:1.0.0")
+
+    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
+    implementation("androidx.paging:paging-compose:3.3.0-alpha05")
+
 
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
