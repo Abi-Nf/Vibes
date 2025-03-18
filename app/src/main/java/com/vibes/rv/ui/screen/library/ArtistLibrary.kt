@@ -15,10 +15,15 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,21 +31,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.unit.em
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.UserRound
 import com.vibes.rv.data.dto.Artist
+import com.vibes.rv.data.repository.ArtistRepository
 import com.vibes.rv.data.repository.TrackRepository
 import com.vibes.rv.ui.component.Icon
 import com.vibes.rv.ui.provider.AppContext
 import com.vibes.rv.util.player.addTracks
 import com.vibes.rv.util.player.playAt
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun ArtistLibrary() {
     val player = AppContext.player
     val context = LocalContext.current
-    val artists by AppContext.artists.collectAsStateWithLifecycle()
+    var artists by remember { mutableStateOf(emptyList<Artist>()) }
+    var isLoading by remember { mutableStateOf<Boolean>(true) }
+
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            ArtistRepository(context)
+                .getArtists()?.let {
+                    artists = it
+                    isLoading = false
+                }
+        }
+    }
 
     val handlePlayArtistSongs = { id: Long ->
         player?.apply {
@@ -67,14 +86,38 @@ fun ArtistLibrary() {
             )
         }
 
-        LazyVerticalGrid(
-            GridCells.Fixed(2),
-            Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            artists?.let {
-                items(it) { artist -> CardArtist(artist) { handlePlayArtistSongs(artist.id) } }
+        if(artists.isEmpty()) {
+            Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    if(isLoading) {
+                        CircularProgressIndicator()
+                        Text(
+                            "Loading artists...",
+                            fontWeight = FontWeight.Bold,
+                        )
+                    } else {
+                        Text(
+                            "˙◠˙",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.em
+                        )
+                        Text(
+                            "No artist was found on your device"
+                        )
+                    }
+                }
+            }
+        } else {
+            LazyVerticalGrid(
+                GridCells.Fixed(2),
+                Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(artists) { artist -> CardArtist(artist) { handlePlayArtistSongs(artist.id) } }
             }
         }
     }

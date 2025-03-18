@@ -1,6 +1,5 @@
 package com.vibes.rv.ui.screen.library
 
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,13 +18,16 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,24 +37,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Play
 import com.shifthackz.catppuccin.palette.Catppuccin
 import com.vibes.rv.data.dto.Album
+import com.vibes.rv.data.repository.AlbumRepository
 import com.vibes.rv.data.repository.TrackRepository
 import com.vibes.rv.ui.component.AsyncThumbnail
 import com.vibes.rv.ui.component.Icon
 import com.vibes.rv.ui.provider.AppContext
 import com.vibes.rv.util.player.addTracks
 import com.vibes.rv.util.player.playAt
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun AlbumLibrary() {
     val player = AppContext.player
     val context = LocalContext.current
     var gridState = rememberLazyGridState()
-    val albums by AppContext.albums.collectAsStateWithLifecycle()
+    var albums by remember { mutableStateOf(emptyList<Album>()) }
+    var isLoading by remember { mutableStateOf<Boolean>(true) }
+
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            AlbumRepository(context)
+                .getAllAlbums()?.let {
+                    albums = it
+                    isLoading = false
+                }
+        }
+    }
 
     val handlePlayerAlbumSongs = { id: Long ->
         player?.apply {
@@ -79,16 +94,42 @@ fun AlbumLibrary() {
             )
         }
 
-        LazyVerticalGrid(
-            GridCells.Fixed(2),
-            Modifier
-                .weight(1f)
-                .padding(horizontal = 15.dp),
-            state = gridState,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            items(albums) { album -> CardAlbum(album) { handlePlayerAlbumSongs(album.id) } }
+        if (albums.isEmpty()) {
+            Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    if(isLoading) {
+                        CircularProgressIndicator()
+                        Text(
+                            "Loading albums...",
+                            fontWeight = FontWeight.Bold,
+                        )
+                    } else {
+                        Text(
+                            "˙◠˙",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.em
+                        )
+                        Text(
+                            "No album was found on your device"
+                        )
+                    }
+                }
+            }
+        } else {
+            LazyVerticalGrid(
+                GridCells.Fixed(2),
+                Modifier
+                    .weight(1f)
+                    .padding(horizontal = 15.dp),
+                state = gridState,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(albums) { album -> CardAlbum(album) { handlePlayerAlbumSongs(album.id) } }
+            }
         }
     }
 }
