@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.common.MediaItem
 import com.vibes.rv.data.dto.Track
 import com.vibes.rv.data.model.PlaylistItem
 import com.vibes.rv.ui.provider.AppContext
@@ -43,7 +44,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddToPlaylistModal(state: SheetState, track: Track, onClose: () -> Unit) {
+fun AddToPlaylistModal(state: SheetState, track: MediaItem, onClose: () -> Unit) {
     val database = AppContext.database
     val playlists by database.playlistDao.getPlaylists().collectAsStateWithLifecycle(emptyList())
     val scope = rememberCoroutineScope()
@@ -72,14 +73,14 @@ fun AddToPlaylistModal(state: SheetState, track: Track, onClose: () -> Unit) {
             ListItem(
                 headlineContent = {
                     Text(
-                        track.title,
+                        track.mediaMetadata.title.toString(),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
                 supportingContent = {
                     Text(
-                        track.artist.name,
+                        track.mediaMetadata.artist.toString(),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -136,7 +137,7 @@ fun AddToPlaylistModal(state: SheetState, track: Track, onClose: () -> Unit) {
                                         database.playlistDao.savePlaylistItem(
                                             PlaylistItem(
                                                 playlistId = it.id!!,
-                                                trackId = track.id
+                                                trackId = track.mediaId.toLong()
                                             )
                                         )
                                         onClose()

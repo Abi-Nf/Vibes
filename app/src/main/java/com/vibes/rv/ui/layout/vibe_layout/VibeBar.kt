@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -126,67 +128,73 @@ internal fun BoxScope.VibeBar(
             }
         )
     }
-
-    Box(
-        Modifier
-            .align(Alignment.BottomCenter)
-            .navigationBarsPadding()
-            .padding(inset.get(status) * inverted)
-            .clip(RoundedCornerShape((roundness.get(status) * inverted).coerceAtLeast(0.dp)))
-            .defaultMinSize(minHeight = height)
-            .fillMaxHeight(dragHeight.value)
-            .fillMaxWidth(barWidth)
-            .combinedClickable(
-                enabled = enabled,
-                indication = null,
-                interactionSource = null,
-                onLongClick = {
-                    val value =
-                        if (status == VibeBarState.MINIFIED) VibeBarState.NORMAL
-                        else VibeBarState.MINIFIED
-                    setStatus(value)
-                },
-                onClick = {
-                    if (status != VibeBarState.FULLSCREEN) {
+    Column(
+        Modifier.align(Alignment.BottomCenter)
+    ) {
+        Box(
+            Modifier
+                .padding(inset.get(status) * inverted)
+                .shadow(
+                    8.dp,
+                    RoundedCornerShape((roundness.get(status) * inverted).coerceAtLeast(0.dp))
+                )
+                .clip(RoundedCornerShape((roundness.get(status) * inverted).coerceAtLeast(0.dp)))
+                .defaultMinSize(minHeight = height)
+                .fillMaxHeight(dragHeight.value)
+                .fillMaxWidth(barWidth)
+                .combinedClickable(
+                    enabled = enabled,
+                    indication = null,
+                    interactionSource = null,
+                    onLongClick = {
                         val value =
-                            if (status == VibeBarState.NORMAL) VibeBarState.FULLSCREEN
-                            else VibeBarState.NORMAL
+                            if (status == VibeBarState.MINIFIED) VibeBarState.NORMAL
+                            else VibeBarState.MINIFIED
                         setStatus(value)
+                    },
+                    onClick = {
+                        if (status != VibeBarState.FULLSCREEN) {
+                            val value =
+                                if (status == VibeBarState.NORMAL) VibeBarState.FULLSCREEN
+                                else VibeBarState.NORMAL
+                            setStatus(value)
+                        }
+                    }
+                )
+                .draggable(
+                    dragState,
+                    Orientation.Vertical,
+                    enabled = enabled,
+                    onDragStarted = { setStatus(VibeBarState.DRAG) },
+                    onDragStopped = { velocity ->
+                        val fullscreen = velocity < 300f && dragHeight.value >= 0.3f
+                        setStatus(
+                            if (fullscreen) VibeBarState.FULLSCREEN
+                            else VibeBarState.NORMAL
+                        )
+                    }
+                )
+        ) {
+            Column(
+                Modifier
+                    .matchParentSize()
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                val heightPercent by rememberUpdatedState(dragHeight.value)
+
+                if (enabled) {
+                    VibesPlayerView(playerState, status, heightPercent)
+                }
+
+                val isVisible by remember {
+                    derivedStateOf {
+                        heightPercent <= 0.2f && status != VibeBarState.MINIFIED
                     }
                 }
-            )
-            .draggable(
-                dragState,
-                Orientation.Vertical,
-                enabled = enabled,
-                onDragStarted = { setStatus(VibeBarState.DRAG) },
-                onDragStopped = { velocity ->
-                    val fullscreen = velocity < 300f && dragHeight.value >= 0.3f
-                    setStatus(
-                        if (fullscreen) VibeBarState.FULLSCREEN
-                        else VibeBarState.NORMAL
-                    )
-                }
-            )
-    ) {
-        Column(
-            Modifier
-                .matchParentSize()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            val heightPercent by rememberUpdatedState(dragHeight.value)
-
-            if(enabled) {
-                VibesPlayerView(playerState, status, heightPercent)
+                Content(isVisible, viewModel.content)
             }
-
-            val isVisible by remember {
-                derivedStateOf {
-                    heightPercent <= 0.2f && status != VibeBarState.MINIFIED
-                }
-            }
-            Content(isVisible, viewModel.content)
         }
+        Spacer(Modifier.navigationBarsPadding())
     }
 }
 

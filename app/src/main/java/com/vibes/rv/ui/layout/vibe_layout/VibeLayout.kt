@@ -27,7 +27,10 @@ fun VibeLayout(
         content(scope)
         VibeBar(
             model,
-            inset = BarParam(PaddingValues(12.dp), PaddingValues(vertical = 16.dp, horizontal = 20.dp)),
+            inset = BarParam(
+                PaddingValues(12.dp),
+                PaddingValues(vertical = 16.dp, horizontal = 20.dp)
+            ),
             playerHeight = BarParam(65.dp, 60.dp),
             width = BarParam(1f, 0.6f),
             roundness = BarParam(20.dp, 36.dp)

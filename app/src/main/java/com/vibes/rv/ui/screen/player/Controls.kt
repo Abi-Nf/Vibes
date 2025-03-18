@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +33,7 @@ internal fun ColumnScope.Controls(musicState: MusicState) {
     Column(
         Modifier
             .weight(1f)
-            .padding(top = 8.dp, bottom = 25.dp)
+            .padding(top = 8.dp)
             .clip(RectangleShape)
         ,
         Arrangement.SpaceBetween
@@ -64,18 +65,25 @@ internal fun ColumnScope.Controls(musicState: MusicState) {
                 )
             }
 
-            Icon(
-                Lucide.Heart,
-                MaterialTheme.colorScheme.inverseSurface,
-                Modifier.size(28.dp)
-            )
-        }
+            IconButton({
 
+            }) {
+                Icon(
+                    Lucide.Heart,
+                    MaterialTheme.colorScheme.inverseSurface,
+                    Modifier.size(28.dp)
+                )
+            }
+        }
         PlayerSlider(
             musicState.currentTime,
             musicState.currentMedia?.mediaMetadata?.durationMs ?: 0L
         )
-        PlayerControl(musicState)
+        Column(
+            Modifier.fillMaxWidth()
+        ) {
+            PlayerControl(musicState)
+        }
         PlayerPanel({}, {}, {}, {}, {})
     }
 }

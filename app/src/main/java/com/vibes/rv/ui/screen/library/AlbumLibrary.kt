@@ -116,11 +116,11 @@ private fun CardAlbum(album: Album, onClick: () -> Unit) {
 
                 AsyncThumbnail(
                     album.image,
-                    500,
-                    500,
                     Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp)),
+                    500,
+                    500,
                     contentScale = ContentScale.Crop,
                 ) {
                     Text(
