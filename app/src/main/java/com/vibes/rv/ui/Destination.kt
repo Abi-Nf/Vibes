@@ -22,7 +22,7 @@ sealed class Destination() {
         data object Playlists : TabbedDestination()
 
         @Serializable
-        data object Me : TabbedDestination()
+        data object Settings : Destination()
     }
 
     @Serializable
@@ -59,7 +59,7 @@ sealed class Destination() {
     data class ArtistDetails(val id: Long) : Destination()
 
     @Serializable
-    data object Settings : Destination()
+    data object Me: Destination()
 
     @Serializable
     data object Equalizer : Destination()

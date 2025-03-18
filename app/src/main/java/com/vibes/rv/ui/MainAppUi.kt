@@ -68,7 +68,7 @@ fun MainAppUi(viewModel: VibesViewModel) {
                             composable<Destination.Tabbed.Artists> { ArtistLibrary() }
                             composable<Destination.Tabbed.Albums> { AlbumLibrary() }
                             composable<Destination.Tabbed.Playlists> { PlaylistLibrary() }
-                            composable<Destination.Tabbed.Me> { MySettings() }
+                            composable<Destination.Tabbed.Settings> { AppSettings() }
                         }
                     }
 
@@ -91,7 +91,7 @@ fun MainAppUi(viewModel: VibesViewModel) {
                     composable<Destination.Favorites> { Favorites() }
                     composable<Destination.Wrapped> { Wrapped() }
 
-                    composable<Destination.Settings> { AppSettings() }
+                    composable<Destination.Me> { MySettings() }
                     composable<Destination.Equalizer> { Equalizer() }
                 }
             }
