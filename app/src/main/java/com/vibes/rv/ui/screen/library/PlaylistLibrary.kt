@@ -225,6 +225,7 @@ fun NewPlaylistModal(state: SheetState, onClose: () -> Unit) {
         onDismissRequest = {
             onClose()
         },
+        containerColor = MaterialTheme.colorScheme.surface,
         scrimColor = if (!isUserAppDark()) MaterialTheme
             .colorScheme
             .inverseSurface
