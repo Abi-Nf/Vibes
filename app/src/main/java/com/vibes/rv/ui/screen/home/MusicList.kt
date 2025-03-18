@@ -230,6 +230,7 @@ fun MusicListItem(context: Context, track: MediaItem, isPlaying: Boolean, onClic
                 }
                 DropdownMenu(
                     expanded = menuIsOpen,
+                    containerColor = MaterialTheme.colorScheme.surface,
                     onDismissRequest = {
                         menuIsOpen = false
                     }

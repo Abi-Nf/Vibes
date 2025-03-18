@@ -55,6 +55,7 @@ fun AddToPlaylistModal(state: SheetState, track: MediaItem, onClose: () -> Unit)
         onDismissRequest = {
             onClose()
         },
+        containerColor = MaterialTheme.colorScheme.surface,
         scrimColor = if (!isUserAppDark()) MaterialTheme
             .colorScheme
             .inverseSurface

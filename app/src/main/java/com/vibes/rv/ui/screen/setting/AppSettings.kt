@@ -36,7 +36,7 @@ fun AppSettings() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("૮(˶ㅠ︿ㅠ)ა", fontWeight = FontWeight.Bold, fontSize = 12.em)
+            Text("૮(˶ㅠ︿ㅠ)ა", fontWeight = FontWeight.Bold, fontSize = 10.em)
             Text(
                 "This area is still under construction"
             )
