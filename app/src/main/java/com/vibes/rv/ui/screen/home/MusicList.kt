@@ -4,11 +4,14 @@ import android.content.Context
 import android.util.Size
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +19,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,43 +54,75 @@ import com.composables.icons.lucide.EllipsisVertical
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Plus
 import com.shifthackz.catppuccin.palette.Catppuccin
+import com.vibes.rv.data.repository.TrackRepository
 import com.vibes.rv.ui.component.AsyncThumbnail
 import com.vibes.rv.ui.component.Icon
 import com.vibes.rv.ui.provider.AppContext
 import com.vibes.rv.ui.util.color.interpolate
 import com.vibes.rv.util.player.playAt
 import com.vibes.rv.util.requestImage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlin.collections.map
+import kotlin.collections.orEmpty
 
 @Composable
-fun MusicList(tracks: List<MediaItem>) {
+fun MusicList() {
     val context = LocalContext.current
     val player = AppContext.player
     var lazyColumnState = rememberLazyListState()
+    var tracks by remember { mutableStateOf<List<MediaItem>>(emptyList()) }
+    var isLoading by remember { mutableStateOf<Boolean>(true) }
+
+    // Definitely a working code  ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            tracks = TrackRepository(context)
+                .getTracks().orEmpty()
+                .map { it.toMediaItem() }
+            isLoading = false
+        }
+    }
 
     Column(
         Modifier
             .fillMaxSize()
             .padding(15.dp)
     ) {
-        Text(
-            "All Tracks",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold
-        )
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Text(
+                "All Tracks",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Text(tracks.size.toString(), Modifier.padding(bottom = 3.dp))
+        }
         if (tracks.isEmpty()) {
             Box(
                 Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        "˙◠˙",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.em
-                    )
-                    Text(
-                        "No tracks was found on your device"
-                    )
+                    if(isLoading) {
+                        CircularProgressIndicator()
+                        Text(
+                            "Loading tracks...",
+                            fontWeight = FontWeight.Bold,
+                        )
+                    } else {
+                        Text(
+                            "˙◠˙",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.em
+                        )
+                        Text(
+                            "No tracks was found on your device"
+                        )
+                    }
                 }
             }
         } else {

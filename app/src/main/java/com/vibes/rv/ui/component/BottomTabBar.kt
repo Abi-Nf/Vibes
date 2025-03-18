@@ -28,6 +28,7 @@ import com.composables.icons.lucide.DiscAlbum
 import com.composables.icons.lucide.House
 import com.composables.icons.lucide.ListMusic
 import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Settings
 import com.composables.icons.lucide.UsersRound
 import com.vibes.rv.ui.Destination
 import com.vibes.rv.ui.util.isActive
@@ -48,7 +49,7 @@ fun BottomTabBar(controller: NavHostController) {
             Navigable(Lucide.DiscAlbum, "Albums", Destination.Tabbed.Albums)
             Navigable(Lucide.UsersRound, "Artists", Destination.Tabbed.Artists)
             Navigable(Lucide.ListMusic, "Playlists", Destination.Tabbed.Playlists)
-            Navigable(Lucide.CircleUserRound, "Me", Destination.Tabbed.Me)
+            Navigable(Lucide.Settings, "Settings", Destination.Tabbed.Settings)
         }
     }
 }
